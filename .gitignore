@@ -1,3 +1,9 @@
-**/*venv/
+# Python
+**/*venv*/
+
+# Jetbrains
 .idea/
+
+# Files and Folders of Program
 .env
+images
