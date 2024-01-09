@@ -54,7 +54,7 @@ def login() -> str:
     json = {"mail": os.getenv("EMAIL"), "passwort": os.getenv("PASSWORD")}
     try:
         response = requests.post(
-            "https://www.app.abihome.de/API/session", json=json, timeout=30
+            "https://www.app.abihome.de/API/session", json=json, timeout=60
         )
     except TimeoutError as e:
         raise TimeoutError("Connection timed out") from e
@@ -86,7 +86,7 @@ def get_galleries(authentication_token: str) -> dict:
     headers = {"Cookie": f"Abihome={authentication_token}"}
     try:
         response = requests.get(
-            "https://www.app.abihome.de/fotos", headers=headers, timeout=30
+            "https://www.app.abihome.de/fotos", headers=headers, timeout=60
         )
     except TimeoutError as e:
         raise TimeoutError("Connection timed out") from e
@@ -129,7 +129,7 @@ def get_images(authentication_token: str, galleries: dict) -> dict:
                     f"https://www.app.abihome.de/ajax.php?"
                     f"aktion=load_fotos&id={gallery_id}&page={page}",
                     headers=headers,
-                    timeout=30,
+                    timeout=60,
                 )
             except TimeoutError as e:
                 raise TimeoutError("Connection timed out") from e
@@ -185,7 +185,7 @@ def download_images(authentication_token: str, galleries: dict) -> None:
                 response = requests.get(
                     f"https://www.app.abihome.de/file_load.php?id={image_id}",
                     headers=headers,
-                    timeout=30,
+                    timeout=60,
                 )
             except TimeoutError as e:
                 raise TimeoutError("Connection timed out") from e
