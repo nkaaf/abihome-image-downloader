@@ -129,7 +129,7 @@ def get_images(authentication_token: str, galleries: dict) -> dict:
                     f"https://www.app.abihome.de/ajax.php?"
                     f"aktion=load_fotos&id={gallery_id}&page={page}",
                     headers=headers,
-                    timeout=5
+                    timeout=5,
                 )
             except TimeoutError as e:
                 raise TimeoutError("Connection timed out") from e
