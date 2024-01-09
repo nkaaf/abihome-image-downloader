@@ -49,9 +49,13 @@ def login() -> str:
     :returns: login token which can be used for further requests.
     :raises AssertionError: if the server returns something unexpected.
     :raises ValueError: if the login credentials are incorrect.
+    :raises TimeoutError: if the connection timed out.
     """
     json = {"mail": os.getenv("EMAIL"), "passwort": os.getenv("PASSWORD")}
-    response = requests.post("https://www.app.abihome.de/API/session", json=json)
+    try:
+        response = requests.post("https://www.app.abihome.de/API/session", json=json, timeout=5)
+    except TimeoutError as e:
+        raise TimeoutError("Connection timed out") from e
     if response.status_code != 200:
         raise AssertionError(
             "Something went wrong while retrieving the authentication token."
@@ -75,9 +79,13 @@ def get_galleries(authentication_token: str) -> dict:
     :param authentication_token: Authentication Token.
     :returns: Dictionary containing all gallery titles.
     :raises AssertionError: if the server returns something unexpected.
+    :raises TimeoutError: if the connection timed out.
     """
     headers = {"Cookie": f"Abihome={authentication_token}"}
-    response = requests.get("https://www.app.abihome.de/fotos", headers=headers)
+    try:
+        response = requests.get("https://www.app.abihome.de/fotos", headers=headers, timeout=5)
+    except TimeoutError as e:
+        raise TimeoutError("Connection timed out") from e
     if response.status_code != 200:
         raise AssertionError("Something went wrong while retrieving the galleries.")
     response = response.content
@@ -104,6 +112,7 @@ def get_images(authentication_token: str, galleries: dict) -> dict:
     :param galleries: Dictionary of all galleries.
     :return: Dictionary of all images which are contained in the galleries.
     :raises AssertionError: if the server returns something unexpected.
+    :raises TimeoutError: if the connection timed out.
     """
     headers = {"Cookie": f"Abihome={authentication_token}"}
     for gallery_id in galleries:
@@ -111,11 +120,14 @@ def get_images(authentication_token: str, galleries: dict) -> dict:
 
         page = 0
         while True:
-            response = requests.post(
-                f"https://www.app.abihome.de/ajax.php?"
-                f"aktion=load_fotos&id={gallery_id}&page={page}",
-                headers=headers,
-            )
+            try:
+                response = requests.post(
+                    f"https://www.app.abihome.de/ajax.php?"
+                    f"aktion=load_fotos&id={gallery_id}&page={page}",
+                    headers=headers,
+                )
+            except TimeoutError as e:
+                raise TimeoutError("Connection timed out") from e
             if response.status_code != 200:
                 raise AssertionError(
                     "Something went wrong while retrieving the images."
@@ -149,6 +161,7 @@ def download_images(authentication_token: str, galleries: dict) -> None:
     :param galleries: Galleries including their pictures.
     :raises AssertionError: if the server returns something unexpected.
     :raises OSError: if the dictionary cannot be created.
+    :raises TimeoutError: if the connection timed out.
     """
     realpath = os.path.realpath(__file__)
     images_dir = os.path.join(os.path.dirname(realpath), "images")
@@ -163,10 +176,14 @@ def download_images(authentication_token: str, galleries: dict) -> None:
 
         print(f"Download images from gallery '{galleries[gallery_id]['title']}'")
         for image_id in galleries[gallery_id]["images"]:
-            response = requests.get(
-                f"https://www.app.abihome.de/file_load.php?id={image_id}",
-                headers=headers,
-            )
+            try:
+                response = requests.get(
+                    f"https://www.app.abihome.de/file_load.php?id={image_id}",
+                    headers=headers,
+                    timeout=5
+                )
+            except TimeoutError as e:
+                raise TimeoutError("Connection timed out") from e
             if response.status_code != 200:
                 raise AssertionError(
                     "Something went wrong while downloading the images."
