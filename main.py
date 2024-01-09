@@ -6,7 +6,9 @@ import requests
 from dotenv import load_dotenv
 from lxml import html
 
-load_dotenv()
+# For compatibility with python-dotenv prior to 0.8.0
+dotenv_path = ".env"
+load_dotenv(dotenv_path)
 
 
 def main():
@@ -69,7 +71,8 @@ def get_images(credentials: str, galleries: dict) -> dict:
                 raise Exception("Programming Error - Get Images")
             response = response.json()["payload"]["message"]
             if response == "":
-                print(f"Found {len(galleries[gallery_id]['images'])} images in gallery '{galleries[gallery_id]['title']}'")
+                print(
+                    f"Found {len(galleries[gallery_id]['images'])} images in gallery '{galleries[gallery_id]['title']}'")
                 break
 
             tree = html.fromstring(response)
@@ -99,7 +102,7 @@ def download_images(credentials: str, galleries: dict):
         for image_id in galleries[gallery_id]["images"]:
             response = requests.get("https://www.app.abihome.de/file_load.php?id={}".format(image_id), headers=headers)
             if response.status_code != 200:
-                raise Exception("Progamming Error - Download Images")
+                raise Exception("Programming Error - Download Images")
             with open(os.path.join(gallery_path, f'{image_id}.jpeg'), "wb") as f:
                 f.write(response.content)
 
@@ -107,4 +110,7 @@ def download_images(credentials: str, galleries: dict):
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Keyboard Interrupt occurred. Exiting...")
