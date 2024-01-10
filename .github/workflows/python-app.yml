@@ -41,7 +41,7 @@ jobs:
         ./main.py
     - name: Check if images exists and not empty
       run: |
-        if ! [ -f images ]; then
+        if ! [ -d images ]; then
           echo "Images dir does not exist!"
           exit 1
         fi

@@ -1,3 +1,16 @@
-requests==2.31.0
-python-dotenv==1.0.0
-lxml==5.0.1
+# Compatible since 2.4.2
+# Must be min 2.31.0 because of CVE-2023-32681
+requests>=2.31.0
+# Compatible since 0.1.0
+python-dotenv>=0.1.0
+# Compatible since 4.1.1 (Python 3.8)
+# Compatible since 4.3.5 (Python 3.9)
+# Compatible since 4.6.3 (Python 3.10)
+# Compatible since 4.9.0 (Python 3.11)
+# Compatible since 4.9.3 (Python 3.12)
+# Must be min 4.6.1 because of CVE-2020-27783
+# Must be min 4.6.2 because of CVE-2021-28957
+# Must be min 4.6.5 because of CVE-2021-43818
+# Must be min 4.9.1 because of CVE-2022-2309
+lxml>=4.9.1 ; python_version < "3.12"
+lxml>=4.9.3 ; python_version >= "3.12"
