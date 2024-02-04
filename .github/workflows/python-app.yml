@@ -5,7 +5,7 @@ name: Python application
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches: [ "master" ]
 
 permissions:
