@@ -2,7 +2,7 @@
 # Must be min 2.31.0 because of CVE-2023-32681
 requests>=2.31.0
 # Compatible since 0.1.0
-python-dotenv>=0.1.0
+python-dotenv>=1.2.3
 # Compatible since 4.1.1 (Python 3.8)
 # Compatible since 4.3.5 (Python 3.9)
 # Compatible since 4.6.3 (Python 3.10)
